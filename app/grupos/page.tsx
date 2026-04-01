@@ -2,18 +2,9 @@
 // Pagina publica — sem autenticacao necessaria
 // Mostra apenas grupos com publico: true
 
-import dynamic from 'next/dynamic'
 import { MapPin, Clock, Users, Calendar } from 'lucide-react'
 import { CLOUD_API_URL } from '@/lib/constants'
-
-const MapaGrupos = dynamic(() => import('@/components/grupos/MapaGrupos'), {
-    ssr: false,
-    loading: () => (
-        <div className="h-[450px] rounded-[1.5rem] bg-soft/30 border border-soft flex items-center justify-center animate-pulse">
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted">A carregar mapa...</p>
-        </div>
-    )
-})
+import MapaGruposWrapper from '@/components/grupos/MapaGruposWrapper'
 
 export const revalidate = 3600 // revalida a cada hora
 
@@ -91,7 +82,7 @@ export default async function GruposPublicosPage() {
                     <h2 className="text-lg font-black uppercase tracking-widest text-fg flex items-center gap-3">
                         <MapPin size={18} className="text-figueira" /> Onde Nos Encontramos
                     </h2>
-                    <MapaGrupos grupos={grupos} altura="450px" mostrarLegenda />
+                    <MapaGruposWrapper grupos={grupos} />
                 </section>
             )}
 
