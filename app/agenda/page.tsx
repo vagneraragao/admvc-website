@@ -1,6 +1,13 @@
 // app/agenda/page.tsx
 // Selecione a unidade ADMVC para visualizar a agenda
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Agenda Semanal",
+  description:
+    "Agenda semanal da ADMVC — cultos, ensino, discipulado e comunhao. Consulte os horarios da Sede e das congregacoes.",
+};
 
 type Evento = {
   dia: string;
@@ -65,12 +72,13 @@ function normalizeUnidade(v?: string): UnidadeKey {
   return "sede";
 }
 
-export default function AgendaPage({
+export default async function AgendaPage({
   searchParams
 }: {
-  searchParams?: { unidade?: string };
+  searchParams: Promise<{ unidade?: string }>;
 }) {
-  const active = normalizeUnidade(searchParams?.unidade);
+  const params = await searchParams;
+  const active = normalizeUnidade(params?.unidade);
   const activeMeta = UNIDADES.find((u) => u.key === active) || UNIDADES[0];
 
   return (

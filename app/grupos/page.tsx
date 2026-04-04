@@ -2,11 +2,19 @@
 // Pagina publica — sem autenticacao necessaria
 // Mostra apenas grupos com publico: true
 
-import { MapPin, Clock, Users, Calendar } from 'lucide-react'
+import { MapPin, Users, Calendar } from 'lucide-react'
 import { CLOUD_API_URL } from '@/lib/constants'
 import MapaGruposWrapper from '@/components/grupos/MapaGruposWrapper'
+import type { Metadata } from 'next'
+import type { Grupo } from '@/lib/types'
 
-export const revalidate = 3600 // revalida a cada hora
+export const metadata: Metadata = {
+  title: "Pequenos Grupos",
+  description:
+    "Encontre um pequeno grupo ADMVC perto de si. Comunidade, estudo biblico e crescimento juntos.",
+}
+
+export const revalidate = 3600
 
 const REGIOES = ['Norte', 'Centro', 'Sul', 'Lisboa', 'Online']
 
@@ -36,13 +44,13 @@ async function getGrupos() {
 export default async function GruposPublicosPage() {
     const grupos = await getGrupos();
 
-    const gruposComMapa = grupos.filter((g: any) => g.latitude && g.longitude)
+    const gruposComMapa = grupos.filter((g: Grupo) => g.latitude && g.longitude)
 
     // Agrupa por regiao para a listagem
     const porRegiao = REGIOES.reduce((acc, r) => {
-        acc[r] = grupos.filter((g: any) => g.regiao === r)
+        acc[r] = grupos.filter((g: Grupo) => g.regiao === r)
         return acc
-    }, {} as Record<string, any[]>)
+    }, {} as Record<string, Grupo[]>)
 
     return (
         <main className="max-w-6xl mx-auto py-12 px-4 sm:px-6 space-y-12 pb-24">
@@ -107,7 +115,7 @@ export default async function GruposPublicosPage() {
 
                         {/* GRID DE CARDS */}
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {porRegiao[regiao].map((grupo: any) => {
+                            {porRegiao[regiao].map((grupo: Grupo) => {
                                 const lider = grupo.lideres?.[0]
                                 return (
                                     <div key={grupo.id}
@@ -167,7 +175,7 @@ export default async function GruposPublicosPage() {
                                                 <div className="flex items-center gap-3 pt-3 border-t border-soft">
                                                     <div className="w-8 h-8 rounded-xl bg-figueira/10 overflow-hidden flex items-center justify-center shrink-0">
                                                         {lider.avatar_file
-                                                            ? <img src={lider.avatar_file} alt="" className="w-full h-full object-cover" />
+                                                            ? <img src={lider.avatar_file} alt={`${lider.first_name} ${lider.last_name}`} className="w-full h-full object-cover" />
                                                             : <span className="text-[9px] font-black text-figueira">
                                                                 {lider.first_name?.[0]}{lider.last_name?.[0]}
                                                             </span>
@@ -207,7 +215,7 @@ export default async function GruposPublicosPage() {
                 <p className="text-sm text-muted font-medium max-w-md mx-auto">
                     Fale connosco — estamos a expandir para novas regioes e adorariamos ter a sua participacao.
                 </p>
-                <a href="/contacto"
+                <a href="/contato"
                     className="inline-flex items-center gap-2 bg-figueira text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-figueira/90 transition-all shadow-lg shadow-figueira/20 active:scale-95">
                     Entrar em Contacto
                 </a>

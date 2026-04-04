@@ -1,49 +1,18 @@
 // app/boasvindas/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useActionState } from 'react'
 import { HeartHandshake, Sparkles, Send, CheckCircle2, Loader2, PlayCircle } from 'lucide-react'
+import { enviarVisitante } from '@/app/actions'
+import { VIDEO_INSTITUCIONAL_URL } from '@/lib/constants'
+import type { FormState } from '@/lib/types'
 
-const API_URL = process.env.NEXT_PUBLIC_CLOUD_API_URL || 'http://localhost:3000';
+const initialState: FormState = { success: false }
 
 export default function BemVindoPage() {
-    const [loading, setLoading] = useState(false)
-    const [sucesso, setSucesso] = useState(false)
+    const [state, formAction, pending] = useActionState(enviarVisitante, initialState)
 
-    async function handleAction(formData: FormData) {
-        setLoading(true)
-
-        const nome = formData.get('nome') as string;
-        const telefone = formData.get('telefone') as string;
-        const originalMsg = formData.get('pedido_oracao') as string;
-        const pedido_oracao = `\uD83C\uDF31 [NOVO VISITANTE]\n${originalMsg || 'Sem pedido especifico.'}`;
-
-        try {
-            const res = await fetch(API_URL + '/api/public/visitante', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nome,
-                    telefone,
-                    pedido_oracao,
-                }),
-            });
-
-            const data = await res.json();
-
-            if (data.ok) {
-                setSucesso(true);
-            } else {
-                alert(data.error || "Ocorreu um erro ao enviar. Tente novamente.");
-            }
-        } catch (error) {
-            alert("Ocorreu um erro ao enviar. Tente novamente.");
-        }
-
-        setLoading(false)
-    }
-
-    if (sucesso) {
+    if (state.success) {
         return (
             <main className="min-h-screen bg-bg flex items-center justify-center p-6 text-center">
                 <div className="space-y-6 animate-in zoom-in duration-500 flex flex-col items-center">
@@ -57,9 +26,8 @@ export default function BemVindoPage() {
                         Recebemos os teus dados e o teu pedido de oracao. Se muito bem-vindo, volta sempre, ou melhor... <span className="text-fg font-black">fica para sempre!</span>
                     </p>
 
-                    {/* Botao para o Video no ecra de sucesso */}
                     <a
-                        href="https://youtu.be/rHNERaeiZPs?si=m0kmcrjyUWSshTxw"
+                        href={VIDEO_INSTITUCIONAL_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-8 inline-flex items-center justify-center gap-3 bg-figueira text-white px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-xl shadow-figueira/20 active:scale-95"
@@ -76,7 +44,6 @@ export default function BemVindoPage() {
         <main className="min-h-screen bg-bg flex flex-col items-center justify-center p-6">
             <div className="w-full max-w-md bg-bg2 border border-soft p-8 md:p-10 rounded-[3rem] shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
 
-                {/* Efeito de Fundo */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-figueira/10 blur-[80px] rounded-full pointer-events-none -mr-20 -mt-20"></div>
 
                 <div className="relative z-10 space-y-8">
@@ -92,35 +59,40 @@ export default function BemVindoPage() {
                         </p>
                     </div>
 
-                    <form action={handleAction} className="space-y-5">
+                    <form action={formAction} className="space-y-5">
+
+                        {state.error && (
+                            <div role="alert" aria-live="assertive" className="rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs font-bold text-red-400">
+                                {state.error}
+                            </div>
+                        )}
 
                         <div className="space-y-1.5">
-                            <label className="text-[9px] font-black uppercase text-muted tracking-widest ml-4">Como te chamas?</label>
-                            <input name="nome" required placeholder="O teu nome..." className="w-full bg-bg border border-soft rounded-2xl p-4 text-sm font-bold text-fg focus:border-figueira outline-none shadow-sm transition-all" />
+                            <label htmlFor="nome-visitante" className="text-[9px] font-black uppercase text-muted tracking-widest ml-4">Como te chamas?</label>
+                            <input id="nome-visitante" name="nome" required placeholder="O teu nome..." className="w-full bg-bg border border-soft rounded-2xl p-4 text-sm font-bold text-fg focus:border-figueira outline-none shadow-sm transition-all" />
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-[9px] font-black uppercase text-muted tracking-widest ml-4">Telemovel / WhatsApp</label>
-                            <input name="telefone" type="tel" required placeholder="O teu contacto..." className="w-full bg-bg border border-soft rounded-2xl p-4 text-sm font-bold text-fg focus:border-figueira outline-none shadow-sm transition-all" />
+                            <label htmlFor="telefone-visitante" className="text-[9px] font-black uppercase text-muted tracking-widest ml-4">Telemovel / WhatsApp</label>
+                            <input id="telefone-visitante" name="telefone" type="tel" required placeholder="O teu contacto..." className="w-full bg-bg border border-soft rounded-2xl p-4 text-sm font-bold text-fg focus:border-figueira outline-none shadow-sm transition-all" />
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-[9px] font-black uppercase text-muted tracking-widest ml-4 flex items-center gap-2">
+                            <label htmlFor="pedido-oracao" className="text-[9px] font-black uppercase text-muted tracking-widest ml-4 flex items-center gap-2">
                                 Pedido de Oracao <Sparkles size={10} className="text-figueira" />
                             </label>
-                            <textarea name="pedido_oracao" rows={3} placeholder="Como podemos orar por ti hoje? (Opcional)" className="w-full bg-bg border border-soft rounded-2xl p-4 text-sm font-bold text-fg focus:border-figueira outline-none shadow-sm transition-all resize-none"></textarea>
+                            <textarea id="pedido-oracao" name="pedido_oracao" rows={3} placeholder="Como podemos orar por ti hoje? (Opcional)" className="w-full bg-bg border border-soft rounded-2xl p-4 text-sm font-bold text-fg focus:border-figueira outline-none shadow-sm transition-all resize-none"></textarea>
                         </div>
 
-                        <button disabled={loading} className="w-full flex items-center justify-center gap-2 bg-fg text-bg py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-figueira hover:text-white transition-all shadow-xl active:scale-95 disabled:opacity-50 mt-4">
-                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-                            {loading ? 'A enviar...' : 'Enviar e Concluir'}
+                        <button disabled={pending} type="submit" className="w-full flex items-center justify-center gap-2 bg-fg text-bg py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-figueira hover:text-white transition-all shadow-xl active:scale-95 disabled:opacity-50 mt-4">
+                            {pending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                            {pending ? 'A enviar...' : 'Enviar e Concluir'}
                         </button>
                     </form>
 
-                    {/* Link de video no final do formulario */}
                     <div className="pt-6 border-t border-soft text-center">
                         <a
-                            href="https://youtu.be/rHNERaeiZPs?si=m0kmcrjyUWSshTxw"
+                            href={VIDEO_INSTITUCIONAL_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-figueira hover:text-fg transition-colors"

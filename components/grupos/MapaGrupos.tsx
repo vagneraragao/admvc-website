@@ -2,7 +2,7 @@
 // components/grupos/MapaGrupos.tsx
 // Importado com dynamic({ ssr: false }) nas páginas que o usam
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import type { Map as LeafletMap } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -13,6 +13,7 @@ function fixLeafletIcons() {
     if (typeof window === 'undefined') return
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const L = require('leaflet')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (L.Icon.Default.prototype as any)._getIconUrl
     L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -53,10 +54,10 @@ function criarIconeColorido(cor: string) {
 }
 
 // Ajusta o mapa para mostrar todos os marcadores
-function FitBounds({ grupos }: { grupos: any[] }) {
+function FitBounds({ grupos }: { grupos: Grupo[] }) {
     const map = useMap()
     useEffect(() => {
-        const comCoords = grupos.filter(g => g.latitude && g.longitude)
+        const comCoords = grupos.filter((g): g is Grupo & { latitude: number; longitude: number } => g.latitude != null && g.longitude != null)
         if (comCoords.length === 0) return
         if (comCoords.length === 1) {
             map.setView([comCoords[0].latitude, comCoords[0].longitude], 13)
@@ -64,27 +65,13 @@ function FitBounds({ grupos }: { grupos: any[] }) {
         }
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const L = require('leaflet')
-        const bounds = L.latLngBounds(comCoords.map((g: any) => [g.latitude, g.longitude]))
+        const bounds = L.latLngBounds(comCoords.map((g) => [g.latitude, g.longitude]))
         map.fitBounds(bounds, { padding: [40, 40] })
     }, [grupos, map])
     return null
 }
 
-interface Grupo {
-    id: number
-    nome: string
-    dia_semana?: string | null
-    horario?: string | null
-    endereco?: string | null
-    cidade?: string | null
-    estado?: string | null
-    regiao?: string | null
-    descricao?: string | null
-    categoria?: string | null
-    latitude?: number | null
-    longitude?: number | null
-    lideres?: { first_name: string; last_name: string }[]
-}
+import type { Grupo } from '@/lib/types'
 
 interface Props {
     grupos: Grupo[]

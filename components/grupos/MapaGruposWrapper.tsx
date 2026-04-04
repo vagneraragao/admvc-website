@@ -11,6 +11,8 @@ const MapaGrupos = dynamic(() => import('@/components/grupos/MapaGrupos'), {
     )
 })
 
-export default function MapaGruposWrapper({ grupos }: { grupos: any[] }) {
+import type { Grupo } from '@/lib/types'
+
+export default function MapaGruposWrapper({ grupos }: { grupos: Grupo[] }) {
     return <MapaGrupos grupos={grupos} />
 }
