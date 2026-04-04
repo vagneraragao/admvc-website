@@ -1,6 +1,7 @@
 // app/page.tsx
 import Link from "next/link";
-import { SITE_NAME, SITE_TAGLINE, CLOUD_API_URL } from "@/lib/constants";
+import { SITE_NAME, SITE_TAGLINE, CLOUD_API_URL, VIDEO_INSTITUCIONAL_URL } from "@/lib/constants";
+import type { DadosObra, EtapaConstrucao } from "@/lib/types";
 
 // --- FETCH DA API CLOUD (COM PROTECAO CONTRA ERROS) ---
 async function getDadosObra() {
@@ -20,7 +21,7 @@ async function getDadosObra() {
     titulo: "Campanha de Construcao: Nossa Sede",
     descricao: "Acompanhe os passos de fe para a nossa sede na Figueira da Foz.",
     objetivoFinal: 750000,
-    videoUrl: "https://youtu.be/rHNERaeiZPs?si=cGNKB0rgjgZMaTUR",
+    videoUrl: VIDEO_INSTITUCIONAL_URL,
     etapas: [
       { nome: "1. Terreno", atual: 0, alvo: 150000 },
       { nome: "2. Estrutura", atual: 0, alvo: 300000 },
@@ -33,8 +34,8 @@ export default async function HomePage() {
   const DADOS_CONSTRUCAO = await getDadosObra();
 
   // Calculos de Progresso (Valores usados apenas para a matematica, nao sao exibidos)
-  const etapas: any[] = DADOS_CONSTRUCAO.etapas || [];
-  const totalArrecadadoGeral = etapas.reduce((sum: number, etapa: any) => sum + (Number(etapa.atual) || 0), 0);
+  const etapas: EtapaConstrucao[] = DADOS_CONSTRUCAO.etapas || [];
+  const totalArrecadadoGeral = etapas.reduce((sum, etapa) => sum + (Number(etapa.atual) || 0), 0);
   const objetivoFinal = Number(DADOS_CONSTRUCAO.objetivoFinal) || 0;
 
   const porcentagemGeral = objetivoFinal > 0
@@ -133,7 +134,7 @@ export default async function HomePage() {
 
         {/* Grid de Etapas Ocultando Valores Financeiros */}
         <div className="relative z-10 grid gap-6 md:grid-cols-3">
-          {DADOS_CONSTRUCAO.etapas?.map((etapa: any, index: number) => {
+          {DADOS_CONSTRUCAO.etapas?.map((etapa: EtapaConstrucao, index: number) => {
             const alvoSeguro = etapa.alvo > 0 ? etapa.alvo : 1;
             const porcentagemEtapa = Math.min(100, Math.round(((etapa.atual || 0) / alvoSeguro) * 100));
             const concluido = porcentagemEtapa >= 100;

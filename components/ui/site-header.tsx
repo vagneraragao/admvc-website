@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { MEMBERS_AREA_URL, SITE_NAME } from "@/lib/constants";
 
 type NavItem = { href: string; label: string };
@@ -13,18 +13,15 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const nav: NavItem[] = useMemo(
-    () => [
-      { href: "/", label: "Inicio" },
-      { href: "/sobre", label: "Sobre" },
-      { href: "/congregacoes", label: "Congregacoes" },
-      { href: "/ministerios", label: "Ministerios" },
-      { href: "/agenda", label: "Agenda" },
-      { href: "/permanecer", label: "Permanecer" },
-      { href: "/contato", label: "Contato" }
-    ],
-    []
-  );
+  const nav: NavItem[] = [
+    { href: "/", label: "Inicio" },
+    { href: "/sobre", label: "Sobre" },
+    { href: "/congregacoes", label: "Congregacoes" },
+    { href: "/ministerios", label: "Ministerios" },
+    { href: "/agenda", label: "Agenda" },
+    { href: "/permanecer", label: "Permanecer" },
+    { href: "/contato", label: "Contato" }
+  ];
 
   useEffect(() => { setOpen(false); }, [pathname]);
 
@@ -64,8 +61,8 @@ export default function SiteHeader() {
           </a>
           <button type="button" onClick={() => setOpen(v => !v)}
             className="md:hidden inline-flex items-center justify-center rounded-xl border border-soft bg-bg2 px-3 py-2 text-fg"
-            aria-expanded={open} aria-label="Menu">
-            <span className="text-lg">{open ? "X" : "="}</span>
+            aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? "Fechar menu" : "Abrir menu"}>
+            <span className="text-lg" aria-hidden="true">{open ? "\u2715" : "\u2630"}</span>
           </button>
         </div>
       </div>

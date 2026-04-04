@@ -2,6 +2,13 @@
 // (Pode atualizar contactos, responsáveis e horários depois — esta página já está preparada.)
 
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Congregacoes",
+  description:
+    "Encontre a congregacao ADMVC mais perto de si — Figueira da Foz (Sede), Leiria e Barcelos. Horarios, enderecos e contactos.",
+};
 
 type Congregacao = {
   badge: "Sede" | "Congregação";

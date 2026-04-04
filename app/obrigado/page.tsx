@@ -1,5 +1,11 @@
 // app/obrigado/page.tsx
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Obrigado",
+  description: "Obrigado por entrar em contacto com a ADMVC.",
+};
 
 export default function ObrigadoPage() {
   return (

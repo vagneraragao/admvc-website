@@ -1,6 +1,13 @@
 // app/ministerios/page.tsx
 // (Os horários e responsáveis podem ser preenchidos depois — estrutura já está pronta.)
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Ministerios",
+  description:
+    "Ministerios da ADMVC — Infantil, Jovens, Louvor, Acao Social, Familia e Discipulado. Servir e parte da nossa missao.",
+};
 
 type Ministerio = {
   slug: string;

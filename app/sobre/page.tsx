@@ -1,5 +1,12 @@
 // app/sobre/page.tsx
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sobre",
+  description:
+    "Conheca a ADMVC — Assembleia de Deus Ministerio Visao de Conquista. A nossa missao, visao e valores.",
+};
 
 export default function SobrePage() {
   return (
