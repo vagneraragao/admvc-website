@@ -26,15 +26,25 @@ export default function BemVindoPage() {
                         Recebemos os teus dados e o teu pedido de oracao. Se muito bem-vindo, volta sempre, ou melhor... <span className="text-fg font-black">fica para sempre!</span>
                     </p>
 
-                    <a
-                        href={VIDEO_INSTITUCIONAL_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-8 inline-flex items-center justify-center gap-3 bg-figueira text-white px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-xl shadow-figueira/20 active:scale-95"
-                    >
-                        <PlayCircle size={18} />
-                        Conhece a Nossa Igreja
-                    </a>
+                    <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                        <a
+                            href="https://youtu.be/rHNERaeiZPs?si=EAVe_7Jo7YWc-hwZ"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-3 bg-figueira text-white px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-xl shadow-figueira/20 active:scale-95"
+                        >
+                            <PlayCircle size={18} />
+                            Video da Igreja
+                        </a>
+                        <a
+                            href="https://igrejaadmvc.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-3 bg-bg2 border border-soft text-fg px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-lg active:scale-95"
+                        >
+                            Visitar o Site
+                        </a>
+                    </div>
                 </div>
             </main>
         )
